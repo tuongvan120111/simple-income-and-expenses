@@ -1,0 +1,240 @@
+<div class="budget-build">
+  <h1 class="title-builder">Budget Builder</h1>
+  <div class="error-field">
+    <span *ngIf="msgErr">{{ msgErr }}!</span>
+  </div>
+
+  <div class="month-range">
+    <div class="month-block">
+      <label for="startMonth">Start Month:</label>
+      <input class="month-input" type="month" [(ngModel)]="startMonth" />
+    </div>
+    <div class="month-block">
+      <label for="endMonth">End Month:</label>
+      <input class="month-input" type="month" [(ngModel)]="endMonth" />
+    </div>
+    <button class="generation-budget" (click)="generateTable()">
+      Generate Budget
+    </button>
+    <button class="generation-budget" (click)="generateExample()">
+      Example Budget
+    </button>
+  </div>
+
+  <table id="budgetTable" *ngIf="months.length" appInputChange #table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <ng-container *ngFor="let month of months">
+          <th>{{ month }}</th>
+        </ng-container>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- Income -->
+      <tr class="category-header">
+        <td>Income</td>
+        <ng-container
+          *ngFor="let month of months; let indexMonthAmount = index"
+        >
+          <td></td>
+        </ng-container>
+        <td></td>
+      </tr>
+
+      <ng-container
+        *ngFor="let category of getCategories(true); let rowIndex = index"
+      >
+        <tr>
+          <td>
+            <ng-container *ngIf="!category.isLabel; else subTotal">
+              <input
+                [style.font-weight]="!category.parenId ? 'bold' : ''"
+                class="input-amount"
+                [value]="category.name"
+                appMove
+                (change)="changeTitleCategory($event, category.id, incomes)"
+                appTab
+                (newSubTitle)="
+                  addSubCategory(incomes, category.parenId, category.id)
+                "
+                appEnter
+                (newCategory)="addNewCategory(incomes)"
+              />
+            </ng-container>
+
+            <ng-template #subTotal>{{ category.name }} </ng-template>
+          </td>
+          <ng-container
+            *ngFor="
+              let amount of category.amountPerMonths;
+              let monthAmountExp = index
+            "
+          >
+            <td
+              [appApplyAll]="category"
+              (applyAllEvent)="appplyAllByCell($event, monthAmountExp, incomes)"
+              appTab
+              (newSubTitle)="
+                addSubCategory(incomes, category.parenId, category.id)
+              "
+              appEnter
+              (newCategory)="addNewCategory(incomes)"
+            >
+              <ng-container *ngIf="!category.isLabel; else content">
+                <input
+                  [style.font-weight]="!category.parenId ? 'bold' : ''"
+                  class="input-amount"
+                  [value]="amount"
+                  appMove
+                  type="number"
+                  (change)="
+                    updateAmount(
+                      $event,
+                      category.id,
+                      incomes,
+                      monthAmountExp,
+                      true
+                    )
+                  "
+                />
+              </ng-container>
+
+              <ng-template #content>
+                {{ category.name ? amount : "" }}
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <td>
+            <a
+              *ngIf="!category.isLabel"
+              class="btn-remove"
+              (click)="removeItem(category.id, true)"
+            >
+              Remove
+            </a>
+          </td>
+        </tr>
+      </ng-container>
+
+      <!-- Expenses -->
+      <tr class="category-header">
+        <td>Expenses</td>
+        <ng-container
+          *ngFor="let month of months; let indexMonthAmount = index"
+        >
+          <td></td>
+        </ng-container>
+        <td></td>
+      </tr>
+
+      <ng-container
+        *ngFor="let category of getCategories(); let rowIndex = index"
+      >
+        <tr>
+          <td>
+            <ng-container *ngIf="!category.isLabel; else subTotal">
+              <input
+                [style.font-weight]="!category.parenId ? 'bold' : ''"
+                class="input-amount"
+                [value]="category.name"
+                appMove
+                (change)="changeTitleCategory($event, category.id, expenses)"
+                appTab
+                (newSubTitle)="
+                  addSubCategory(incomes, category.parenId, category.id)
+                "
+                appEnter
+                (newCategory)="addNewCategory(incomes)"
+              />
+            </ng-container>
+
+            <ng-template #subTotal>{{ category.name }} </ng-template>
+          </td>
+          <ng-container
+            *ngFor="
+              let amount of category.amountPerMonths;
+              let monthAmountExp = index
+            "
+          >
+            <td
+              [appApplyAll]="category"
+              (applyAllEvent)="
+                appplyAllByCell($event, monthAmountExp, expenses)
+              "
+              appTab
+              (newSubTitle)="
+                addSubCategory(expenses, category.parenId, category.id)
+              "
+              appEnter
+              (newCategory)="addNewCategory(expenses)"
+            >
+              <ng-container *ngIf="!category.isLabel; else content">
+                <input
+                  [style.font-weight]="!category.parenId ? 'bold' : ''"
+                  class="input-amount"
+                  [value]="amount"
+                  appMove
+                  type="number"
+                  (change)="
+                    updateAmount($event, category.id, expenses, monthAmountExp)
+                  "
+                />
+              </ng-container>
+
+              <ng-template #content>
+                {{ category.name ? amount : "" }}
+              </ng-template>
+            </td>
+          </ng-container>
+
+          <td>
+            <a
+              *ngIf="!category.isLabel"
+              class="btn-remove"
+              (click)="removeItem(category.id)"
+            >
+              Remove
+            </a>
+          </td>
+        </tr>
+      </ng-container>
+
+      <!-- Profix -->
+      <tr class="category-header">
+        <td>Profit / Loss</td>
+        <ng-container
+          *ngFor="let month of months; let indexMonthAmount = index"
+        >
+          <td>{{ getProfix(indexMonthAmount) || "0" }}</td>
+        </ng-container>
+        <td></td>
+      </tr>
+
+      <!-- Opening Balance -->
+      <tr class="category-header">
+        <td>Opening Balance</td>
+        <ng-container
+          *ngFor="let month of months; let indexMonthAmount = index"
+        >
+          <td>{{ getOpen(indexMonthAmount) }}</td>
+        </ng-container>
+        <td></td>
+      </tr>
+
+      <!-- Close Balance -->
+      <tr class="category-header">
+        <td>Close Balance</td>
+        <ng-container
+          *ngFor="let month of months; let indexMonthAmount = index"
+        >
+          <td>{{ getClose(indexMonthAmount) }}</td>
+        </ng-container>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

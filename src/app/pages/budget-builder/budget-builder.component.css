@@ -1,0 +1,114 @@
+table,
+th,
+td {
+  border: 1px solid var(--black);
+  border-collapse: collapse;
+}
+
+thead th,
+thead td {
+  min-width: 7rem;
+  padding: 1.2rem 1rem;
+}
+
+tbody td {
+  min-width: 7rem;
+  padding: 0.8rem 1rem;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Budget Header */
+.budget-build {
+  font-size: 1.6rem;
+  padding: 0 2rem;
+}
+
+.title-builder {
+  font-size: 5.6rem;
+  text-align: center;
+  margin-bottom: 3.2rem;
+}
+
+.error-field {
+  color: var(--red);
+  height: 25px;
+}
+
+/* Month Generation */
+.month-range {
+  font-size: 2rem;
+  display: flex;
+  margin-bottom: 2rem;
+}
+
+.month-block {
+  margin-right: 2.4rem;
+}
+
+.month-input {
+  padding: 5px;
+  border-radius: 2px;
+  border: 1px solid;
+  font-size: 1.4rem;
+  margin-left: 0.8rem;
+}
+
+.generation-budget {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid;
+  cursor: pointer;
+  margin-right: 16px;
+}
+
+.generation-budget:hover {
+  background-color: var(--mid-blue);
+}
+
+.generation-budget:active {
+  background-color: var(--dark-blue);
+}
+
+/*  */
+
+.category-header {
+  background-color: var(--blue);
+}
+
+.category-title {
+  padding: 0 1rem;
+}
+
+.btn {
+  padding: 0.5rem;
+}
+
+.btn-remove {
+  padding: 0.8rem;
+  border-radius: 2px;
+  user-select: none;
+  margin: 0.8rem 0;
+}
+
+.btn-remove:hover {
+  background-color: var(--blue);
+  cursor: pointer;
+}
+
+.btn-remove:active {
+  background-color: var(--dark-blue);
+}
+
+.input-amount {
+  padding: 0.8rem 1rem;
+  font-size: 1.4rem;
+  min-width: 7rem;
+  border: unset;
+}
+
+/*  */
